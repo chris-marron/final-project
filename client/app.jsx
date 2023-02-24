@@ -1,8 +1,16 @@
 import React from 'react';
-import Home from './pages/home';
+import { Navbar } from './components/Navbar';
+import { Catalog } from './components/Catalog';
+import { Carasouel } from './components/Carasouel';
 
-export default class App extends React.Component {
-  render() {
-    return <Home />;
-  }
-}
+const App = () => {
+  return (
+    <div>
+      < Navbar />
+      < Carasouel />
+      < Catalog />
+    </div>
+  );
+};
+
+export default App;
