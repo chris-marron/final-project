@@ -2,6 +2,8 @@ import React from 'react';
 
 export const Carasouel = () => {
   return (
-    <div>Carasouel</div>
+    <h1 className="text-2xl font-bold underline">
+      Hello world!
+    </h1>
   );
 };

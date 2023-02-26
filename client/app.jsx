@@ -5,11 +5,11 @@ import { Carasouel } from './components/Carasouel';
 
 const App = () => {
   return (
-    <div>
+    <>
       < Navbar />
       < Carasouel />
       < Catalog />
-    </div>
+    </>
   );
 };
 

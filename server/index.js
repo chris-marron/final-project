@@ -2,19 +2,23 @@ require('dotenv/config');
 const express = require('express');
 const staticMiddleware = require('./static-middleware');
 const errorMiddleware = require('./error-middleware');
-// const pg = require('pg');
+// const cors = require('cors');
+const axios = require('axios');
 
 const app = express();
 
-app.use(express.json());
-
 app.use(staticMiddleware);
 
-app.get('/hello', (req, res) => {
-  res.json({ hello: 'world' });
-});
-app.get('/api/hello', (req, res) => {
-  res.json({ hello: 'world' });
+app.get('/products', (req, res) => {
+  const options = {
+    method: 'GET',
+    url: 'https://dummyjson.com/products'
+  };
+  axios.request(options).then(response => {
+    res.json(response.data);
+  }).catch(error => {
+    console.error(error);
+  });
 });
 
 app.use(errorMiddleware);
