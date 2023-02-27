@@ -9,7 +9,7 @@ const app = express();
 
 app.use(staticMiddleware);
 
-app.get('/products', (req, res) => {
+app.get('/products', (req, res, next) => {
   const options = {
     method: 'GET',
     url: 'https://dummyjson.com/products'
@@ -18,6 +18,7 @@ app.get('/products', (req, res) => {
     res.json(response.data);
   }).catch(error => {
     console.error(error);
+    next();
   });
 });
 

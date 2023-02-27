@@ -1,0 +1,16 @@
+Insert INTO "Product" ("productId", "title", "description","price", "imageUrl", "category")
+VALUES (1, 'Product 1', 'Description 1', 100, 'https://picsum.photos/200/300', 'Category 1'),
+(2, 'Product 2', 'Description 2', 200, 'https://picsum.photos/200/300', 'Category 2'),
+(3, 'Product 3', 'Description 3', 300, 'https://picsum.photos/200/300', 'Category 3'),
+(4, 'Product 4', 'Description 4', 400, 'https://picsum.photos/200/300', 'Category 4'),
+(5, 'Product 5', 'Description 5', 500, 'https://picsum.photos/200/300', 'Category 5'),
+(6, 'Product 6', 'Description 6', 600, 'https://picsum.photos/200/300', 'Category 6'),
+(7, 'Product 7', 'Description 7', 700, 'https://picsum.photos/200/300', 'Category 7'),
+(8, 'Product 8', 'Description 8', 800, 'https://picsum.photos/200/300', 'Category 8'),
+(9, 'Product 9', 'Description 9', 900, 'https://picsum.photos/200/300', 'Category 9'),
+(10, 'Product 10', 'Description 10', 1000, 'https://picsum.photos/200/300', 'Category 10'),
+(11, 'Product 11', 'Description 11', 1100, 'https://picsum.photos/200/300', 'Category 11'),
+(12, 'Product 12', 'Description 12', 1200, 'https://picsum.photos/200/300', 'Category 12'),
+(13, 'Product 13', 'Description 13', 1300, 'https://picsum.photos/200/300', 'Category 13'),
+(14, 'Product 14', 'Description 14', 1400, 'https://picsum.photos/200/300', 'Category 14'),
+(15, 'Product 15', 'Description 15', 1500, 'https://picsum.photos/200/300', 'Category 15')
