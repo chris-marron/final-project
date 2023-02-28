@@ -5,24 +5,30 @@ import { Carasouel } from './Carasouel';
 
 export const Catalog = () => {
   const [Sdata, setData] = useState([]);
-  // const [error, setError] = useState(null);
-  // const [isLoaded, setIsLoaded] = useState(false);
-  // const [choosenItem, setChoosenItem] = useState(null);
+  const [error, setError] = useState(null);
+  const [isLoaded, setIsLoaded] = useState(false);
   const catalogItems = () => {
     const options = {
       method: 'GET',
-      url: 'http://localhost:3000/products'
+      url: 'http://localhost:3000/catalog'
     };
     axios.request(options).then(response => {
       setData(response.data.products);
-
+      setIsLoaded(true);
     }).catch(error => {
       console.error(error);
+      setError(error);
+      setIsLoaded(true);
     });
   };
   useEffect(() => {
     catalogItems();
   }, []);
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  } else if (!isLoaded) {
+    return <div>Loading...</div>;
+  }
   return (
     <>
       < Navbar data={Sdata}/>
@@ -37,9 +43,6 @@ export const Catalog = () => {
                   src={item.images[0]}
                   alt={item.imageAlt}
                     className=" w-full h-80 object-center object-cover rounded-lg "
-                  onClick={e => {
-                    // console.log(e.target);
-                  }}
                 />
                 </div>
                 <h3 className="mt-4 text-sm text-gray-700">{item.title}</h3>

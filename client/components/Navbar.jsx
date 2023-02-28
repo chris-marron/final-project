@@ -1,7 +1,12 @@
 import React from 'react';
+import { Category } from './Category';
+import { Link, useParams } from 'react-router-dom';
+import { Product } from './Product';
+import { Catalog } from './Catalog';
 
 export const Navbar = ({ data }) => {
   const unique = [...new Set(data.map(item => item.category))];
+
   return (
     <nav className="flex items-center justify-between flex-wrap bg-white p-6 border-b-2 border-gray fixed w-full">
       <div className="flex items-center flex-shrink-0 text-black mr-6 ">
@@ -11,7 +16,9 @@ export const Navbar = ({ data }) => {
             <div className="group-hover:block dropdown-menu fixed hidden h-auto">
               <ul className="top-0 w-100 bg-white shadow px-10 py-12 ">
                 {unique.map((item, index) => (
-                  <li className="py-1" key={index}><a className="block text-black-500 font-bold text-base uppercase cursor-pointer hover:bg-blue-300">{item}</a></li>
+                  <li className="py-1" key={index}><Link to={`/product/categories/${item}`} onClick={() => {
+                    console.log(item);
+                  }} className="block text-black-500 font-bold text-base uppercase cursor-pointer hover:bg-blue-300">{item}</Link></li>
                 ))}
               </ul>
             </div>

@@ -1,4 +1,5 @@
 require('dotenv/config');
+const ClientError = require('./client-error');
 const express = require('express');
 const staticMiddleware = require('./static-middleware');
 const errorMiddleware = require('./error-middleware');
@@ -9,10 +10,42 @@ const app = express();
 
 app.use(staticMiddleware);
 
-app.get('/products', (req, res, next) => {
+app.get('/catalog', (req, res, next) => {
   const options = {
     method: 'GET',
     url: 'https://dummyjson.com/products'
+  };
+  axios.request(options).then(response => {
+    res.json(response.data);
+  }).catch(error => {
+    console.error(error);
+    next();
+  });
+});
+
+app.get('/product/:productId', (req, res, next) => {
+  if (!req.params.productId) {
+    throw new ClientError(400, 'productId is required');
+  }
+  const options = {
+    method: 'GET',
+    url: `https://dummyjson.com/products/${req.params.productId}`
+  };
+  axios.request(options).then(response => {
+    res.json(response.data);
+  }).catch(error => {
+    console.error(error);
+    next();
+  });
+});
+
+app.get('/product/category/:category', (req, res, next) => {
+  if (!req.params.category) {
+    throw new ClientError(400, 'category is required');
+  }
+  const options = {
+    method: 'GET',
+    url: `https://dummyjson.com/products/category/${req.params.category}`
   };
   axios.request(options).then(response => {
     res.json(response.data);
