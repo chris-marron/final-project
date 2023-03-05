@@ -35,9 +35,7 @@ app.get('/api/products', (req, res, next) => {
 app.get('/api/products/:productId', (req, res, next) => {
   const productId = parseInt(req.params.productId, 10);
   if (!Number.isInteger(productId) || productId <= 0) {
-    return res.status(400).json({
-      error: '"productId" must be a positive integer'
-    });
+    throw new ClientError(`productId must be a positive integer, not ${productId}`, 400);
   }
   const sql = `
     select *
@@ -72,6 +70,9 @@ app.get('/api/categories', (req, res, next) => {
 });
 
 app.get('/api/categories/:id', (req, res, next) => {
+  if (!parseInt(req.params.id, 10)) {
+    throw new ClientError('id must be a positive integer', 400);
+  }
   const params = [req.params.id];
   const sql = `
     select *

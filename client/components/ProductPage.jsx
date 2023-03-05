@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
 import { Navbar } from './Navbar';
 
 export const Product = ({ item }) => {
@@ -8,24 +7,13 @@ export const Product = ({ item }) => {
   const [Sdata, setData] = useState([]);
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
-  const catalogItems = () => {
-    const options = {
-      method: 'GET',
-      url: `http://localhost:3000/products/${id}`,
-      headers: { 'Content-Type': 'application/json' }
-    };
-    axios.request(options).then(response => {
-      setData(response.data.product);
-      setIsLoaded(true);
-    }).catch(error => {
-      console.error(error);
-      setIsLoaded(true);
-      setError(error);
-    });
-  };
+
   useEffect(() => {
-    catalogItems();
-  });
+    fetch(`http://localhost:3000/api/products/${id}`)
+      .then(res => res.json())
+      .then(data => { setData(data); setIsLoaded(true); })
+      .catch(err => { setError(err); setIsLoaded(true); });
+  }, [id]);
 
   if (error) {
     return <div>Error: {error.message}</div>;
@@ -35,7 +23,21 @@ export const Product = ({ item }) => {
   return (
     <>
       <Navbar/>
-      <div className='py-10' ><h1>hello</h1></div>
+      <div className="container mx-auto my-20 px-4 md:px-0">
+        <div className="flex flex-wrap items-center">
+          <div className="w-full md:w-1/2 md:pr-8 mb-8 md:mb-0">
+            <img src={Sdata.imageUrl} alt="Product Image" className="w-full h-100 object-cover rounded-md shadow-md" />
+          </div>
+          <div className="w-full md:w-1/2">
+            <h1 className="text-3xl font-bold mb-2">{Sdata.name}</h1>
+            <p className="text-lg text-gray-600 mb-4">{Sdata.description}</p>
+            <p className="text-lg font-bold mb-4">{Sdata.price}</p>
+            <button className="bg-black text-white px-6 md:px-10 py-2 rounded-md hover:bg-gray-800 transition-colors shadow-md" onClick={e => {
+            }}>Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
     </>
   );
 };
