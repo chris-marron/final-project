@@ -87,6 +87,26 @@ app.get('/api/categories/:id', (req, res, next) => {
     .catch(err => next(err));
 });
 
+app.post('/cart', (req, res, next) => {
+  const productId = parseInt(req.body.productId, 10);
+  if (!Number.isInteger(productId) || productId <= 0) {
+    throw new ClientError(`productId must be a positive integer, not ${productId}`, 400);
+  }
+  const sql = `
+    insert into "carts" ("cartId", "productId")
+    values (default, $1)
+    returning *
+  `;
+  const params = [productId];
+  db.query(sql, params)
+    .then(result => {
+      const cart = result.rows[0];
+      res.status(201).json(cart);
+    })
+    .catch(err => next(err));
+
+});
+
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public/index.html'));
 });

@@ -31,7 +31,7 @@ export const Product = ({ item }) => {
           <div className="w-full md:w-1/2">
             <h1 className="text-3xl font-bold mb-2">{Sdata.name}</h1>
             <p className="text-lg text-gray-600 mb-4">{Sdata.description}</p>
-            <p className="text-lg font-bold mb-4">{Sdata.price}</p>
+            <p className="text-lg font-bold mb-4">{`$${Sdata.price}`}</p>
             <button className="bg-black text-white px-6 md:px-10 py-2 rounded-md hover:bg-gray-800 transition-colors shadow-md" onClick={e => {
             }}>Add to Cart</button>
           </div>
