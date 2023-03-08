@@ -20,6 +20,18 @@ export const Product = ({ item }) => {
   } else if (!isLoaded) {
     return <div>Loading...</div>;
   }
+  const addToCart = () => {
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ productId: Sdata.productId })
+    };
+    fetch('localhost:3000/api/cart', requestOptions)
+      .then(res => res.json())
+      .then(data => (data))
+      .catch(err => (err));
+
+  };
   return (
     <>
       <Navbar/>
@@ -32,8 +44,7 @@ export const Product = ({ item }) => {
             <h1 className="text-3xl font-bold mb-2">{Sdata.name}</h1>
             <p className="text-lg text-gray-600 mb-4">{Sdata.description}</p>
             <p className="text-lg font-bold mb-4">{`$${Sdata.price}`}</p>
-            <button className="bg-black text-white px-6 md:px-10 py-2 rounded-md hover:bg-gray-800 transition-colors shadow-md" onClick={e => {
-            }}>Add to Cart</button>
+            <button className="bg-black text-white px-6 md:px-10 py-2 rounded-md hover:bg-gray-800 transition-colors shadow-md" onClick={addToCart}>Add to Cart</button>
           </div>
         </div>
       </div>

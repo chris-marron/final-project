@@ -87,24 +87,99 @@ app.get('/api/categories/:id', (req, res, next) => {
     .catch(err => next(err));
 });
 
-app.post('/cart', (req, res, next) => {
-  const productId = parseInt(req.body.productId, 10);
-  if (!Number.isInteger(productId) || productId <= 0) {
-    throw new ClientError(`productId must be a positive integer, not ${productId}`, 400);
+app.post('/api/carts', (req, res, next) => {
+  const { productId, quantity } = req.body;
+  if (!productId || !quantity) {
+    throw new ClientError('productId and quantity are required fields', 400);
   }
   const sql = `
-    insert into "carts" ("cartId", "productId")
-    values (default, $1)
-    returning *
-  `;
+    SELECT * FROM products WHERE productId = $1`;
+
+  db.query(sql, [productId])
+    .then(result => {
+      if (!result.rows[0]) {
+        throw new ClientError(`cannot find product with "productId" ${productId}`, 404);
+      } else {
+        const sql = `
+        INSERT INTO "carts" ("cartId", "productId", "quantity")
+        VALUES (default, $1, $2)
+        RETURNING *`;
+        const params = [productId, quantity];
+        db.query(sql, params)
+          .then(result => {
+            res.status(201).json(result.rows[0]);
+          })
+          .catch(err => next(err));
+      }
+    });
+
+});
+
+app.put('/api/carts/:cartId', (req, res, next) => {
+  const { productId, quantity } = req.body;
+  if (!productId || !quantity) {
+    throw new ClientError('productId and quantity are required fields', 400);
+  }
+  const cartId = parseInt(req.params.cartId, 10);
+  if (!Number.isInteger(cartId) || cartId <= 0) {
+    throw new ClientError(`cartId must be a positive integer, not ${cartId}`, 400);
+  }
+  const sql = `
+    SELECT * FROM products WHERE productId = $1`;
   const params = [productId];
   db.query(sql, params)
     .then(result => {
-      const cart = result.rows[0];
-      res.status(201).json(cart);
+      if (!result.rows[0]) {
+        throw new ClientError(`cannot find product with "productId" ${productId}`, 404);
+      } else {
+        const sql = `
+        UPDATE "carts"
+        SET "productId" = $1,
+            "quantity" = $2
+        WHERE "cartId" = $3
+        RETURNING *`;
+        const params = [productId, quantity, cartId];
+        db.query(sql, params)
+          .then(result => {
+            res.status(201).json(result.rows[0]);
+          })
+          .catch(err => next(err));
+      }
+    }
+    );
+});
+
+app.delete('/api/carts/:cartId', (req, res, next) => {
+  const cartId = parseInt(req.params.cartId, 10);
+  if (!Number.isInteger(cartId) || cartId <= 0) {
+    throw new ClientError(`cartId must be a positive integer, not ${cartId}`, 400);
+  }
+  const sql = `
+    DELETE FROM "carts"
+    WHERE "cartId" = $1
+    RETURNING *`;
+  const params = [cartId];
+  db.query(sql, params)
+    .then(result => {
+      if (!result.rows[0]) {
+        throw new ClientError(`cannot find cart with "cartId" ${cartId}`, 404);
+      } else {
+        res.status(204).json(result.rows[0]);
+      }
     })
     .catch(err => next(err));
+});
 
+app.get('/carts', (req, res, next) => {
+  const sql = `
+    SELECT *
+      FROM "carts"
+      `;
+  db.query(sql)
+    .then(result => {
+      res.json(result.rows);
+    })
+    .catch(err => next(err));
 });
 
 app.get('*', (req, res) => {

@@ -62,10 +62,10 @@ CREATE TABLE "public"."orders" (
 
 
 CREATE TABLE "public"."carts" (
-	"cartId" serial NOT NULL,
-	"cartKey" varchar(255) NOT NULL,
+  "cartId" serial NOT NULL,
 	"productId" int NOT NULL,
-	"quantity" int NOT NULL,
+	"quantity" int NOT NULL CHECK (quantity > 0),
+	"createdAt" TIMESTAMP WITH time zone DEFAULT NOW(),
 	CONSTRAINT "carts_pk" PRIMARY KEY ("cartId")
 ) WITH (
   OIDS=FALSE
@@ -80,4 +80,4 @@ ALTER TABLE "orderItem" ADD CONSTRAINT "orderItem_fk0" FOREIGN KEY ("orderId") R
 ALTER TABLE "orderItem" ADD CONSTRAINT "orderItem_fk1" FOREIGN KEY ("productId") REFERENCES "products"("productId");
 
 
-ALTER TABLE "carts" ADD CONSTRAINT "carts_fk0" FOREIGN KEY ("quantity") REFERENCES "products"("productId");
+ALTER TABLE "carts" ADD CONSTRAINT "carts_fk0" FOREIGN KEY ("productId") REFERENCES "products"("productId");
