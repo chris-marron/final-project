@@ -93,25 +93,15 @@ app.post('/api/carts', (req, res, next) => {
     throw new ClientError('productId and quantity are required fields', 400);
   }
   const sql = `
-    SELECT * FROM products WHERE productId = $1`;
-
-  db.query(sql, [productId])
+    INSERT INTO "carts" ("productId", "quantity")
+    VALUES ($1, $2)
+    RETURNING *`;
+  const params = [productId, quantity];
+  db.query(sql, params)
     .then(result => {
-      if (!result.rows[0]) {
-        throw new ClientError(`cannot find product with "productId" ${productId}`, 404);
-      } else {
-        const sql = `
-        INSERT INTO "carts" ("cartId", "productId", "quantity")
-        VALUES (default, $1, $2)
-        RETURNING *`;
-        const params = [productId, quantity];
-        db.query(sql, params)
-          .then(result => {
-            res.status(201).json(result.rows[0]);
-          })
-          .catch(err => next(err));
-      }
-    });
+      res.status(201).json(result.rows[0]);
+    })
+    .catch(err => next(err));
 
 });
 
@@ -125,28 +115,23 @@ app.put('/api/carts/:cartId', (req, res, next) => {
     throw new ClientError(`cartId must be a positive integer, not ${cartId}`, 400);
   }
   const sql = `
-    SELECT * FROM products WHERE productId = $1`;
-  const params = [productId];
-  db.query(sql, params)
-    .then(result => {
-      if (!result.rows[0]) {
-        throw new ClientError(`cannot find product with "productId" ${productId}`, 404);
-      } else {
-        const sql = `
-        UPDATE "carts"
+    UPDATE "carts"
         SET "productId" = $1,
             "quantity" = $2
         WHERE "cartId" = $3
         RETURNING *`;
-        const params = [productId, quantity, cartId];
-        db.query(sql, params)
-          .then(result => {
-            res.status(201).json(result.rows[0]);
-          })
-          .catch(err => next(err));
+  const params = [productId, quantity, cartId];
+  db.query(sql, params)
+    .then(result => {
+      if (!result.rows[0]) {
+        throw new ClientError(`cannot find cart with "cartId" ${cartId}`, 404);
+      } else {
+        res.status(200).json(result.rows[0]);
       }
     }
-    );
+    )
+    .catch(err => next(err));
+
 });
 
 app.delete('/api/carts/:cartId', (req, res, next) => {
@@ -174,6 +159,7 @@ app.get('/carts', (req, res, next) => {
   const sql = `
     SELECT *
       FROM "carts"
+      JOIN "products" using ("productId")
       `;
   db.query(sql)
     .then(result => {
