@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Navbar } from './Navbar';
+// import Cart from './Cart';
 
 export const Product = ({ item }) => {
   const { id } = useParams();
@@ -26,7 +27,7 @@ export const Product = ({ item }) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ productId: Sdata.productId })
     };
-    fetch('localhost:3000/api/cart', requestOptions)
+    fetch('http://localhost:3000/api/carts', requestOptions)
       .then(res => res.json())
       .then(data => (data))
       .catch(err => (err));

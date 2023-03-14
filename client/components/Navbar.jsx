@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import Cart from './Cart';
 
 export const Navbar = () => {
   const [Sdata, setData] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState(null);
+  const [show, setShow] = useState(false);
 
   const catalogItems = () => {
     fetch('http://localhost:3000/api/categories')
       .then(res => res.json())
       .then(data => { setData(data); setIsLoaded(true); })
       .catch(err => { setError(err); setIsLoaded(true); });
+
   };
   useEffect(() => {
     catalogItems();
@@ -20,7 +23,6 @@ export const Navbar = () => {
   } else if (!isLoaded) {
     return <div>Loading...</div>;
   }
-  // const unique = [...new Set(Sdata.map(item => item.name))];
   return (
     <nav className="flex items-center justify-between flex-wrap bg-white p-6 border-b-2 border-gray fixed w-full top-0 z-50">
       <div className="flex items-center flex-shrink-0 text-black mr-6">
@@ -44,7 +46,13 @@ export const Navbar = () => {
       </div>
 
       <div>
-        <i className="fa-solid fa-cart-shopping cursor-pointer" />
+        <i className="fa-solid fa-cart-shopping cursor-pointer" onClick={() => {
+          setShow(!show);
+        }} />
+        {show &&
+        <Cart/>
+
+        }
       </div>
     </nav>
   );

@@ -88,15 +88,15 @@ app.get('/api/categories/:id', (req, res, next) => {
 });
 
 app.post('/api/carts', (req, res, next) => {
-  const { productId, quantity } = req.body;
-  if (!productId || !quantity) {
+  const { productId } = req.body;
+  if (!productId) {
     throw new ClientError('productId and quantity are required fields', 400);
   }
   const sql = `
-    INSERT INTO "carts" ("productId", "quantity")
-    VALUES ($1, $2)
+    INSERT INTO "carts" ("productId")
+    VALUES ($1)
     RETURNING *`;
-  const params = [productId, quantity];
+  const params = [productId];
   db.query(sql, params)
     .then(result => {
       res.status(201).json(result.rows[0]);

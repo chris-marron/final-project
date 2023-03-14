@@ -64,7 +64,6 @@ CREATE TABLE "public"."orders" (
 CREATE TABLE "public"."carts" (
   "cartId" serial NOT NULL,
 	"productId" int NOT NULL,
-	"quantity" int NOT NULL CHECK (quantity > 0),
 	"createdAt" TIMESTAMP WITH time zone DEFAULT NOW(),
 	CONSTRAINT "carts_pk" PRIMARY KEY ("cartId")
 ) WITH (
