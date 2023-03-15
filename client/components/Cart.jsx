@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from 'react';
-const { useParams } = require('react-router-dom');
 
 const Cart = () => {
-  const { cartId } = useParams();
   const [cart, setCart] = useState([]);
+  const [cartId, setCartId] = useState([]);
 
   const getCart = () => {
     fetch('http://localhost:3000/carts')
       .then(res => res.json())
       .then(data => setCart(data));
   };
-  const deleteFromCart = () => {
+  const deleteFromCart = cartId => {
     fetch(`http://localhost:3000/api/carts/${cartId}`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ cartId: cart.cartId })
+      body: JSON.stringify({ cartId })
     })
       .then(res => res.json())
       .then(data => (data))
