@@ -2,27 +2,50 @@ import React, { useState, useEffect } from 'react';
 
 const Cart = () => {
   const [cart, setCart] = useState([]);
-  const [cartId, setCartId] = useState([]);
-
-  const getCart = () => {
-    fetch('http://localhost:3000/carts')
-      .then(res => res.json())
-      .then(data => setCart(data));
-  };
-  const deleteFromCart = cartId => {
-    fetch(`http://localhost:3000/api/carts/${cartId}`, {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ cartId })
-    })
-      .then(res => res.json())
-      .then(data => (data))
-      .catch(err => (err));
-  };
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
-    getCart();
+    fetchCart();
   }, []);
+
+  const fetchCart = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/carts');
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+      const data = await response.json();
+      setCart(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const deleteFromCart = async cartId => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/carts/${cartId}`, {
+        method: 'DELETE'
+      });
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+
+      if (response.status !== 204) {
+        const data = await response.json();
+        setMessage(data.message);
+      } else {
+        setMessage('Item deleted from cart');
+      }
+
+      fetchCart();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleDelete = cartId => {
+    deleteFromCart(cartId);
+  };
 
   return (
     <div className="container">
@@ -50,7 +73,7 @@ const Cart = () => {
                   <td>{`$${item.price}`}</td>
                   <td>{item.quantity}</td>
                   <td>{`$${item.price}`}</td>
-                  <td><button onClick={deleteFromCart}>DELETE</button></td>
+                  <td><button onClick={() => { handleDelete(item.cartId); }}>DELETE</button></td>
                 </tr>
               ))}
             </tbody>
